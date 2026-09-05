@@ -6,11 +6,10 @@ __lua__
 function _init()
 	cls()
 	init_player(42,60)
-	c_x = 0
-	c_y = 0
+	map_x = 0
+	map_y = 0
 	mode="start"
 	init_game()
-	
 end
 
 function _update()
@@ -31,21 +30,16 @@ end
 function _draw()
 	cls()
 	camera(cx,cy)
-	map(c_x,c_y)
-	
+	map(map_x,map_y)
 	draw_player()
-	
 	if mode=="levelover" then
 		-- draw_levelover()
-	
 	end
-
 end
 
 function col(x,y)
-
 		return fget(
-			mget(c_x + x/8, c_y + y/8),0
+			mget(map_x + x/8, map_y + y/8),0
 		)
 end
 
@@ -60,7 +54,6 @@ end
 -- player functions
 
 function init_player(srt_x, srt_y)
-
 	p = {
 		x =srt_x,
 		y =srt_y,
@@ -71,23 +64,20 @@ function init_player(srt_x, srt_y)
 	}
 	frame=1
 	gravity = 1.3
-	
 end
 
 function update_player()
-	
+--move buttons----------------
 	if (btn(⬅️)) then
 		p.flipped = true
 		p.dx -= 0.2
 		animate(7,9,0.2)
 	end
-	
 	if (btn(➡️)) then
 		p.flipped = false
 		p.dx += 0.2
 		animate(7,9,0.2)
 	end
-	
 	if btnp(⬆️) or btnp(🅾️) then
 		if p.g then
 			animate(33,35,0.2)
@@ -96,51 +86,19 @@ function update_player()
 		end
 	end
 	
+--idle stance-----------------
 	if not btnp(⬆️) and not btnp(🅾️)
 	and not (btn(➡️)) and not (btn(⬅️))
 	then
 		animate(1,6,0.2)
 	end
 	
+--moving speeds----------------
 	p.y += p.dy
 	p.dx *= 0.8 
 	p.dy += 0.09
 	cx = 0
 	cy = 0
-	
-	if level_finished(p.x+7,p.y) then
-		mode = "levelover"
-	end
-	
-		if col(p.x,p.y+8)
-		or col(p.x+7, p.y+8) then
-			if not p.g then
-				sfx(4)
-				animate(49,54,0.01)
-			end
-			p.dy = 0 
-			p.g = true
-		else
-			p.g = false
-			p.land = false
-		end
-
-	
-	--bump the clipped pixel up
-	if col(p.x,p.y+7)
-	and col(p.x+7, p.y+7) then
-	p.y -= 1
-	end
-	
-	if col(p.x+7, p.y+7) then
-	p.x -= 1
-	end
-	
-	if col(p.x, p.y+7) then
-	p.x +=  1
-	end
-	
-	
 	
 	if p.dx > 0 then 
 		if not col(p.x+8, p.y+7) then
@@ -153,22 +111,57 @@ function update_player()
 			p.x += p.dx
 		end
 	end
+	
+--completed level----------
+	if level_finished(p.x+7,p.y) then
+		mode = "levelover"
+	end
+	
+--collision checks---------
+		if col(p.x,p.y+8)
+		or col(p.x+7, p.y+8) then
+			if not p.g then
+				sfx(4)
+				animate(49,54,0.01)
+			end
+			p.dy = 0 
+			p.g = true
+		else
+			p.g = false
+			p.land = false
+		end
+		
+--bump the clipped pixel up---
+	if col(p.x,p.y+7)
+	and col(p.x+7, p.y+7) then
+	p.y -= 1
+	end
+	
+	if col(p.x+7, p.y+7) then
+	p.x -= 1
+	end
+	
+	if col(p.x, p.y+7) then
+	p.x +=  1
+	end
 end
 
-
+--draw player on screen-------
 function draw_player()
 	spr(frame,p.x,p.y,1,1,p.flipped)
-	--pset(p.x-1,p.y+7,7)
 end
 
 
 function animate(start, 
 end_frame, speed)
 	
+--if impact ground-----------
 	if frame == 7 and p.g then
 	 sfx(5)
 	end
-	if frame < start then
+
+--animation------------------
+	if frame<start then
 	 frame = start
 	end
 	if frame<end_frame - speed
@@ -185,23 +178,19 @@ end
 
 function init_game()
 
-	location = {
-	{0,0},
-	{21,0}
+--location of levels on map
+	levels = {
+	{0,0,"x1"},
+	{21,0,"x2"}
 	}
-	
-	
-	level_struct = {
+--level struct	
+	level = {
 		x = 0,
 		y = 0,
 		name = "x1"
 	}
-	levels = {}
-	levels[1]= "x1"
-	levels[2]= "x2"
+--level number
 	levelnum = 1
-	level = levels[levelnum]
-
 end
 
 function draw_gamveover()
@@ -227,27 +216,25 @@ function next_level()
 	-- endgame 
 	
 	else
+--update to next level------
 		sfx(6)
-		level = levels[levelnum]
-		
-		next_location = 
-		location[levelnum]
+		level.x = levels[levelnum][1]
+		level.y = levels[levelnum][2]
+		level.name = levels[levelnum][3]
 		 
-		p.x = next_location[1]
-		p.y = next_location[2]
-		c_x = next_location[1]
-		c_y = next_location[2]
-		
+		p.x = level.x
+		p.y = level.y
+		map_x = level.x
+		map_y = level.y
 	end
 end
 
 
-
+--level finished flag check---
 function level_finished(x,y)
 	return fget(
 		mget(x/8, y/8),1
 	)
-
 end
 __gfx__
 00000000000000000700007007000070000000000000000000000000070007000700070000000000000000000000000000000000000000000000000000000000
