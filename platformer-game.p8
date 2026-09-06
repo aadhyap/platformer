@@ -9,11 +9,7 @@ function _init()
 end
 
 function _update()
-	
-	if state == "splash" then
-		splash_update()
-	
-	end
+
 	if state == "menu" then
 		menu_update()
 	end
@@ -327,6 +323,7 @@ function intro()
  t=0
  palt(11,true)
  sfx(1)
+ 
  while (t<120) do
  	color(3)
   print("onian",54,64)
@@ -337,15 +334,17 @@ function intro()
   flip()
   cls(0)
  end
+ 
  t = 0
- while (t < 60) do
+ 
+ while (t < 50) do
  	color(3)
  	print("onian",54,64)
  	flip()
  	cls(0)
  	t += 1
- 
  end
+ 
 end
 __gfx__
 00000000000000000700007007000070000000000000000000000000070007000700070000000000000000000000000000000000000000000000000000000000
