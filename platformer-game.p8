@@ -20,9 +20,8 @@ function _update()
 		
 		elseif mode=="levelover" then
 			next_level()
-			if btnp(❎) then
-				mode = "start"
-			end
+			mode = "start"
+
 		end
 end
 
@@ -33,7 +32,7 @@ function _draw()
 	map(map_x,map_y)
 	draw_player()
 	if mode=="levelover" then
-		-- draw_levelover()
+		-- draw_levelover() - dont need
 	end
 end
 
@@ -83,8 +82,6 @@ function update_player()
 	end
 	
 
-	
-	
 	if btnp(⬆️) or btnp(🅾️) then
 		up =true
 		if p.g then
@@ -100,8 +97,7 @@ function update_player()
 
 	if not btnp(⬆️) and not btnp(🅾️)
 	and not (btn(➡️)) and not (btn(⬅️))
- and not land then
-		up = false
+ and not land and not up then
 		animate(1,6,0.2)
 	end
 	
@@ -188,9 +184,13 @@ end_frame, speed)
 			frame=start
 		end
 		
-		if frame >= end_frame-speed and land then
-			
-			land = false
+		if frame >= end_frame-speed then
+			if land then
+				land = false
+			end
+			if up then 
+				up = false
+			end
 		end
 
 end
