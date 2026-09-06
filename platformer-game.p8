@@ -4,7 +4,7 @@ __lua__
 --init file
 
 function _init()
-	intro()
+--	intro()
 	state = "menu"
 end
 
@@ -31,9 +31,6 @@ function _draw()
 end
 -->8
 --menu state
-
-
-
 function menu_update()
 	
 	if (btnp(❎)) then 
@@ -44,16 +41,18 @@ end
 	
 function menu_draw()
 --clear screen with blue 
-cls(12)
+cls(1)
 
 --title + shadow
 print("a game!", 51, 48, 0)
-print("a game!", 50, 48, 7)
+print("a game!", 50, 48, 3)
 
 
 --instructions + shadow
-print("press ❎ to play!", 31,70,0)
-print("press ❎ to play!", 30,72,7)
+print("press ❎ to play!", 31,
+70,0)
+print("press ❎ to play!", 30,
+72,3)
 
 end
 -->8
