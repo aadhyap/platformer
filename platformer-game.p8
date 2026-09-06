@@ -68,16 +68,23 @@ end
 
 function update_player()
 --move buttons----------------
-	if (btn(⬅️)) then
-		p.flipped = true
-		p.dx -= 0.2
-		animate(7,9,0.2)
+	if (btn(⬅️)) or (btn(➡️)) then
+		land = false
+		if not up then
+			animate(7,9,0.2)
+		end
+		if (btn(⬅️)) then
+			p.flipped = true
+			p.dx -= 0.2
+		else
+			p.flipped = false
+			p.dx += 0.2
+		end
 	end
-	if (btn(➡️)) then
-		p.flipped = false
-		p.dx += 0.2
-		animate(7,9,0.2)
-	end
+	
+
+	
+	
 	if btnp(⬆️) or btnp(🅾️) then
 		up =true
 		if p.g then
